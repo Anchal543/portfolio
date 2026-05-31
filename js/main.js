@@ -3,8 +3,7 @@ AOS.init({
     duration: 800,
     once: true,
     offset: 100,
-    easing: 'ease-in-out',
-    disable: 'mobile' // Disable on mobile for better performance
+    easing: 'ease-in-out'
 });
 
 // ==================== SPLIDE JS CAROUSEL INITIALIZATION ====================
@@ -86,90 +85,25 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// ==================== RESUME DOWNLOAD FUNCTIONALITY ====================
+// ==================== RESUME DOWNLOAD FROM ASSETS/RESUME/ ====================
 const downloadBtn = document.getElementById('downloadResumeBtn');
 if (downloadBtn) {
     downloadBtn.addEventListener('click', function(e) {
         e.preventDefault();
         
-        // Create resume content as PDF-like text
-        const resumeContent = `ALEX MORGAN - CREATIVE DEVELOPER
-================================
-
-CONTACT INFORMATION
-------------------
-Email: alex@creativedev.com
-Phone: +1 (555) 123-4567
-Location: San Francisco, CA
-GitHub: github.com/alexmorgan
-LinkedIn: linkedin.com/in/alexmorgan
-
-PROFESSIONAL SUMMARY
--------------------
-Creative Full-Stack Developer with 5+ years of experience building high-performance web applications. Expert in modern JavaScript frameworks, responsive design, and creating exceptional user experiences. Passionate about clean code and innovative solutions.
-
-TECHNICAL SKILLS
----------------
-• Frontend: React, Vue.js, Angular, TypeScript, Next.js, HTML5, CSS3
-• Backend: Node.js, Python, PHP, Express.js, MongoDB, PostgreSQL
-• Tools: Git, Docker, AWS, Firebase, Figma, Adobe XD
-• Testing: Jest, Mocha, Cypress
-• Other: RESTful APIs, GraphQL, Webpack, Vite
-
-WORK EXPERIENCE
----------------
-Senior Frontend Developer | TechCorp (2022 - Present)
-• Led development of AI-powered analytics dashboard serving 50k+ users
-• Improved application performance by 40% through code optimization
-• Mentored 3 junior developers and conducted code reviews
-
-Full-Stack Developer | StudioNinja (2019 - 2022)
-• Built 20+ responsive websites for clients across various industries
-• Implemented CI/CD pipelines reducing deployment time by 60%
-• Collaborated with design team to create pixel-perfect implementations
-
-EDUCATION
----------
-Bachelor of Science in Computer Science
-University of California, Berkeley | 2015 - 2019
-• GPA: 3.8/4.0
-• Relevant Coursework: Web Development, Data Structures, UI/UX Design
-
-CERTIFICATIONS
--------------
-• Meta Frontend Developer Professional Certificate
-• Advanced React and Redux (Udemy)
-• AWS Cloud Practitioner
-
-PROJECT HIGHLIGHTS
------------------
-• AI Analytics Dashboard: Real-time data visualization with machine learning
-• E-Commerce Platform: Full-featured online store with payment integration
-• Mobile Banking App: Cross-platform solution with secure authentication
-
-LANGUAGES
----------
-• English (Native)
-• Spanish (Professional Working Proficiency)
-
-REFERENCES
-----------
-Available upon request.
-
-Portfolio: creativedev.com
-GitHub: github.com/alexmorgan
-`;
+        // Path to your resume file - UPDATE THIS FILENAME IF DIFFERENT
+        const resumePath = 'assets/resume/resume.pdf';
         
-        // Create blob and trigger download
-        const blob = new Blob([resumeContent], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Alex_Morgan_Resume.txt';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        // Method 1: Direct download using anchor tag (Recommended)
+        const link = document.createElement('a');
+        link.href = resumePath;
+        link.download = 'Sarah_Chen_Resume.pdf'; // Custom download filename
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Optional: Show success message
+        // console.log('Resume download initiated');
     });
 }
 
@@ -180,8 +114,8 @@ if (contactForm) {
         e.preventDefault();
         
         // Get form data
-        const formData = new FormData(contactForm);
-        const name = formData.get('name') || 'User';
+        const nameInput = this.querySelector('input[placeholder="Your Name"]');
+        const name = nameInput ? nameInput.value : 'User';
         
         // Show success message
         alert(`Thank you ${name}! Your message has been sent successfully. I'll get back to you within 24 hours.`);
@@ -191,33 +125,33 @@ if (contactForm) {
     });
 }
 
-// ==================== TYPING ANIMATION FOR HERO (Optional) ====================
-const heroTitle = document.querySelector('.hero-title');
-if (heroTitle) {
-    const originalText = heroTitle.innerHTML;
-    // Add subtle animation class
-    heroTitle.style.opacity = '0';
-    heroTitle.style.transform = 'translateY(20px)';
-    
-    setTimeout(() => {
-        heroTitle.style.transition = 'all 0.8s ease';
-        heroTitle.style.opacity = '1';
-        heroTitle.style.transform = 'translateY(0)';
-    }, 100);
+// ==================== PROFILE IMAGE ERROR HANDLING ====================
+const profileImg = document.getElementById('profileImg');
+if (profileImg) {
+    profileImg.addEventListener('error', function() {
+        // If image fails to load, show a placeholder
+        this.style.display = 'none';
+        const wrapper = this.parentElement;
+        const placeholder = document.createElement('div');
+        placeholder.className = 'profile-placeholder';
+        placeholder.innerHTML = '<i class="fas fa-user-circle"></i>';
+        placeholder.style.cssText = `
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #6366f1, #06b6d4);
+            border-radius: 50%;
+            font-size: 80px;
+            color: white;
+        `;
+        wrapper.appendChild(placeholder);
+    });
 }
 
-// ==================== PARALLAX EFFECT ON SCROLL ====================
-window.addEventListener('scroll', function() {
-    const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero');
-    if (hero) {
-        hero.style.transform = `translateY(${scrolled * 0.3}px)`;
-        hero.style.opacity = 1 - scrolled * 0.002;
-    }
-});
-
 // ==================== SKILL PROGRESS ANIMATION ON VIEW ====================
-const skillCards = document.querySelectorAll('.skill-card');
+const skillItems = document.querySelectorAll('.skill-item');
 const observerOptions = {
     threshold: 0.3,
     rootMargin: '0px'
@@ -239,7 +173,7 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-skillCards.forEach(card => {
+skillItems.forEach(card => {
     observer.observe(card);
 });
 
@@ -249,28 +183,13 @@ const navbarCollapse = document.querySelector('.navbar-collapse');
 
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
-        if (navbarCollapse.classList.contains('show')) {
+        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
             navbarToggler.click();
         }
     });
 });
 
-// ==================== PAGE LOAD ANIMATION ====================
-window.addEventListener('load', () => {
-    document.body.style.opacity = '0';
-    document.body.style.transition = 'opacity 0.5s ease';
-    setTimeout(() => {
-        document.body.style.opacity = '1';
-    }, 100);
-    
-    // Add loading spinner removal if needed
-    const loader = document.querySelector('.loader');
-    if (loader) {
-        loader.style.display = 'none';
-    }
-});
-
-// ==================== BACK TO TOP BUTTON (Optional) ====================
+// ==================== BACK TO TOP BUTTON ====================
 const createBackToTopButton = () => {
     const button = document.createElement('button');
     button.innerHTML = '<i class="fas fa-arrow-up"></i>';
@@ -313,8 +232,9 @@ const createBackToTopButton = () => {
     });
 };
 
-// Initialize back to top button after DOM loads
+// Initialize back to top button
 document.addEventListener('DOMContentLoaded', createBackToTopButton);
 
 // Log to console that portfolio is ready
 console.log('Portfolio website loaded successfully! 🚀');
+console.log('Resume download will fetch from: assets/resume/resume.pdf');
